@@ -3,13 +3,16 @@
 let inptTituloLibro = document.querySelector("#tituloLibro");
 let inptAutorLibro = document.querySelector("#autorLibro");
 let inptIsbnLibro = document.querySelector("#isbnLibro");
+
+let tbBodyLibros = document.querySelector("#tablaLibros")
+
 let btnAgregarLibro = document.querySelector("#btnAgregarLibro");
 
-let librosDisponibles = JSON.parse(localStorage.getItem("librosdisponibles")) || [];
+let librosDisponibles = JSON.parse(localStorage.getItem("librosDisponibles")) || [];
 
 /*02 Manipuación de eventos*/
 
-btnAgregarLibro.addEventListener("click", agregarLibro )
+btnAgregarLibro.addEventListener("click", agregarLibro)
 
 
 /*03 Funciones*/
@@ -20,7 +23,7 @@ function agregarLibro() {
     let isbn = inptIsbnLibro.value.trim();
 
     /*Validacion de campos obligatorios*/
-    if(titulo==""|| autor=="" || isbn==""){
+    if (titulo == "" || autor == "" || isbn == "") {
         alert("Por favor, complete todos los campos");
         return;
     }
@@ -40,10 +43,45 @@ function agregarLibro() {
     //limpiar los campos de los formularios
 
     inptTituloLibro.value = "",
-    inptAutorLibro.value = "",
-    inptIsbnLibro.value = "",
+        inptAutorLibro.value = "",
+        inptIsbnLibro.value = "",
 
-    alert("Libro agregado exitosamente");
+        alert("Libro agregado exitosamente");
+        mostrarLibros()
 
 
 }
+
+/*Funcion para mostrar todos los libros*/
+
+function mostrarLibros() {
+    //limpiar el tbody antes de renderizar
+
+    tbBodyLibros.innerHTML = "";
+
+    librosDisponibles.forEach((elemnt, index) => {
+        tbBodyLibros.innerHTML += `
+        <tr>
+            <td class="border p-2">${elemnt.titulo}</td>
+            <td class="border p-2">${elemnt.autor}</td>
+            <td class="border p-2">${elemnt.isbn}</td>
+            <td class="border p-2">Disponible</td>
+            <td class="border p-2">
+                <button class="bg-red-500 text-white px-2" 
+                onclick="eliminarLibro(${index})">Eliminar</button>
+            </td>
+        </tr>
+
+        `
+    })
+}
+
+function eliminarLibro(index){
+    alert(`Libro con indice ${index} eliminado`)
+    librosDisponibles.splice(index,1);
+    localStorage.setItem("librosDisponibles", JSON.stringify(librosDisponibles));
+   mostrarLibros();
+
+}
+
+mostrarLibros();
